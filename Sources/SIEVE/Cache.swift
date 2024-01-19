@@ -21,6 +21,18 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
         self.capacity = capacity
     }
     
+    public func contains(_ key: Key) -> Bool {
+        nodes.keys.contains(key)
+    }
+    
+    @discardableResult
+    public mutating func removeValue(forKey key: Key) -> Value? {
+        guard let node = nodes[key] else {
+            return nil
+        }
+        return self.removeNode(node)
+    }
+    
     public subscript(_ key: Key) -> Value? {
         mutating get {
             guard let node = nodes[key] else {
@@ -56,18 +68,6 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
         }
     }
     
-    public func contains(_ key: Key) -> Bool {
-        nodes.keys.contains(key)
-    }
-    
-    @discardableResult
-    public mutating func removeValue(forKey key: Key) -> Value? {
-        guard let node = nodes[key] else {
-            return nil
-        }
-        return self.removeNode(node)
-    }
-    
     @discardableResult
     public mutating func updateValue(_ value: Value, forKey key: Key) -> Value? {
         guard let node = nodes[key] else {
@@ -99,11 +99,11 @@ extension Cache {
     }
     
     private mutating func addNode(forKey key: Key, value: Value) {
-        let node = Node(key: key, value: value, next: head)
-        
         if count == capacity {
             self.evict()
         }
+        
+        let node = Node(key: key, value: value, next: head)
         nodes[key] = node
         
         if let head {
