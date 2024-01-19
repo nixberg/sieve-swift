@@ -29,6 +29,24 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
             node.visited = true
             return node.value
         }
+        mutating _modify {
+            if let node = nodes[key] {
+                var value: Value? = node.value
+                yield &value
+                if let value {
+                    node.value = value
+                    node.visited = true
+                } else {
+                    self.removeNode(node)
+                }
+            } else {
+                var value: Value? = nil
+                yield &value
+                if let value {
+                    self.addNode(forKey: key, value: value)
+                }
+            }
+        }
         mutating set {
             if let newValue {
                 self.updateValue(newValue, forKey: key)
