@@ -52,18 +52,14 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
     
     @discardableResult
     public mutating func updateValue(_ value: Value, forKey key: Key) -> Value? {
-        if let node = nodes[key] {
-            defer { node.value = value }
-            return node.value
+        guard let node = nodes[key] else {
+            self.addNode(forKey: key, value: value)
+            return nil
         }
-        
-        if count == capacity {
-            self.evict()
-        }
-        
-        self.addNode(forKey: key, value: value)
-        
-        return nil
+        let oldValue = node.value
+        node.value = value
+        node.visited = true
+        return oldValue
     }
 }
 
@@ -87,6 +83,9 @@ extension Cache {
     private mutating func addNode(forKey key: Key, value: Value) {
         let node = Node(key: key, value: value, next: head)
         
+        if count == capacity {
+            self.evict()
+        }
         nodes[key] = node
         
         if let head {
