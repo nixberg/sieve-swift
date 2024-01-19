@@ -1,5 +1,5 @@
 public struct Cache<Key: Hashable, Value>: ~Copyable {
-    private var nodes: [Key: Node] = [:]
+    private var nodes: [Key: Node]
     
     private unowned var head: Node? = nil
     private unowned var tail: Node? = nil
@@ -17,7 +17,7 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
     
     public init(capacity: Int) {
         precondition(capacity > 0, "Capacity must be greater than zero")
-        nodes.reserveCapacity(capacity)
+        nodes = Dictionary(minimumCapacity: capacity)
         self.capacity = capacity
     }
     
