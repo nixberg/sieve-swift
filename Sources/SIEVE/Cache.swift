@@ -41,7 +41,7 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
             node.visited = true
             return node.value
         }
-        mutating _modify {
+        _modify {
             if let node = nodes[key] {
                 var value: Value? = node.value
                 yield &value
@@ -59,7 +59,7 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
                 }
             }
         }
-        mutating set {
+        set {
             if let newValue {
                 self.updateValue(newValue, forKey: key)
             } else {
