@@ -33,5 +33,5 @@ final class SIEVETests: XCTestCase {
     }
 }
 
-@inline(never)
+@_optimize(none)
 fileprivate func blackHole<T>(_ value: T) {}
