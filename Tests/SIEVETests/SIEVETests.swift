@@ -9,8 +9,8 @@ final class SIEVETests: XCTestCase {
         XCTAssertTrue(cache.isEmpty)
         
         cache["a"] = "a"
-        cache["a"]?.append("+")
         cache["b", default: ""].append("b")
+        cache["a"]!.append("+")
         XCTAssertEqual(cache.removeValue(forKey: "b"), "b")
         cache["c"] = "c"
         XCTAssertNil(cache.updateValue("x", forKey: "d"))
