@@ -68,6 +68,25 @@ public struct Cache<Key: Hashable, Value>: ~Copyable {
         }
     }
     
+    public subscript(
+        key: Key,
+        default defaultValue: @autoclosure () -> Value
+    ) -> Value {
+        mutating get {
+            self[key] ?? defaultValue()
+        }
+        _modify {
+            if let node = nodes[key] {
+                yield &node.value
+                node.visited = true
+            } else {
+                var value = defaultValue()
+                yield &value
+                self.addNode(forKey: key, value: value)
+            }
+        }
+    }
+    
     @discardableResult
     public mutating func updateValue(_ value: Value, forKey key: Key) -> Value? {
         guard let node = nodes[key] else {

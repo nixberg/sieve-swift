@@ -9,8 +9,8 @@ final class SIEVETests: XCTestCase {
         XCTAssertTrue(cache.isEmpty)
         
         cache["a"] = "a"
-        cache["b"].unconditionallyAppend("b")
         cache["a"]?.append("+")
+        cache["b", default: ""].append("b")
         XCTAssertEqual(cache.removeValue(forKey: "b"), "b")
         cache["c"] = "c"
         XCTAssertNil(cache.updateValue("x", forKey: "d"))
@@ -35,9 +35,3 @@ final class SIEVETests: XCTestCase {
 
 @inline(never)
 fileprivate func blackHole<T>(_ value: T) {}
-
-extension String? {
-    fileprivate mutating func unconditionallyAppend(_ other: String) {
-        self = (self ?? "").appending(other)
-    }
-}
